@@ -5,12 +5,19 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 
+const hotelRoutes = require('./routes/hotels');
+const roomRoutes = require('./routes/rooms');
+const reservationRoutes = require('./routes/reservations');
+const customerRoutes = require('./routes/customers');
+const paymentRoutes = require('./routes/payments');
+const socketHandler = require('./middleware/socketHandler');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
   }
 });
 
@@ -20,32 +27,41 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hotel_mana
 app.use(cors());
 app.use(express.json());
 
-io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
+// API routes
+app.use('/api/hotels', hotelRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/reservations', reservationRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/payments', paymentRoutes);
 
-  socket.on('booking:update', (payload) => {
-    io.emit('booking:updated', payload);
-  });
+// Real-time events
+socketHandler(io);
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Hotel management API is running',
+    timestamp: new Date().toISOString()
   });
 });
 
+// Fallback demo data for UI if DB is not connected yet
 const hotels = [
   {
     id: 1,
     name: 'Sunset Grand Hotel',
     city: 'Hyderabad',
     rating: 4.8,
-    availableRooms: 12
+    availableRooms: 12,
+    amenities: ['Wi-Fi', 'Pool', 'Parking']
   },
   {
     id: 2,
     name: 'Blue Horizon Resort',
     city: 'Bengaluru',
     rating: 4.6,
-    availableRooms: 8
+    availableRooms: 8,
+    amenities: ['Gym', 'Restaurant', 'Spa']
   }
 ];
 
@@ -65,74 +81,44 @@ const customers = [
   { id: 2, name: 'Ananya', email: 'ananya@example.com', phone: '9123456780' }
 ];
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Hotel API is running' });
-});
+app.get('/api/demo/hotels', (req, res) => res.json(hotels));
+app.get('/api/demo/rooms', (req, res) => res.json(rooms));
+app.get('/api/demo/reservations', (req, res) => res.json(reservations));
+app.get('/api/demo/customers', (req, res) => res.json(customers));
 
-app.get('/api/hotels', (req, res) => {
-  res.json(hotels);
-});
-
-app.get('/api/rooms', (req, res) => {
-  res.json(rooms);
-});
-
-app.get('/api/reservations', (req, res) => {
-  res.json(reservations);
-});
-
-app.get('/api/customers', (req, res) => {
-  res.json(customers);
-});
-
-app.post('/api/payments', (req, res) => {
+app.post('/api/demo/payments', (req, res) => {
   const { amount, method, reservationId } = req.body;
 
   if (!amount || !method || !reservationId) {
     return res.status(400).json({ message: 'Please provide amount, method, and reservationId' });
   }
 
-  res.json({
+  const payment = {
     success: true,
     paymentId: `pay_${Date.now()}`,
     amount,
     method,
     reservationId,
     status: 'paid'
-  });
-});
-
-app.post('/api/reservations', (req, res) => {
-  const { guestName, roomId, checkIn, checkOut } = req.body;
-
-  if (!guestName || !roomId || !checkIn || !checkOut) {
-    return res.status(400).json({ message: 'Missing required reservation fields' });
-  }
-
-  const newReservation = {
-    id: reservations.length + 1,
-    guestName,
-    roomId,
-    checkIn,
-    checkOut,
-    status: 'confirmed'
   };
 
-  reservations.push(newReservation);
-  io.emit('booking:updated', { type: 'reservation-created', reservation: newReservation });
-
-  res.status(201).json(newReservation);
+  io.emit('booking:updated', { type: 'payment-created', payment });
+  res.status(201).json(payment);
 });
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-  })
-  .catch((err) => {
-    console.log('MongoDB connection failed, continuing without DB:', err.message);
-  });
+const connectDB = async () => {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000
+    });
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.log('MongoDB not available, running in demo mode:', error.message);
+  }
+};
+
+connectDB();
 
 server.listen(PORT, () => {
-  console.log(`Hotel backend running on http://localhost:${PORT}`);
+  console.log(`Hotel management server running on http://localhost:${PORT}`);
 });
