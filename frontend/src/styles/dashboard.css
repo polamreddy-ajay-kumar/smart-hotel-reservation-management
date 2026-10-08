@@ -1,0 +1,309 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.dashboard-header {
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left h1 {
+  margin: 0 0 5px 0;
+  color: #1e40af;
+  font-size: 1.8rem;
+}
+
+.header-left p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.btn-logout {
+  padding: 10px 20px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: #dc2626;
+}
+
+.dashboard-content {
+  padding: 30px 40px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.revenue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.stat-card.revenue p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-info h3 {
+  margin: 5px 0 0 0;
+  font-size: 2rem;
+  color: #1e40af;
+}
+
+.stat-card.revenue h3 {
+  color: white;
+}
+
+.stat-info small {
+  display: block;
+  color: #999;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.stat-card.revenue small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dashboard-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.dashboard-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-section h2 {
+  margin-top: 0;
+  color: #1e40af;
+  margin-bottom: 20px;
+}
+
+.occupancy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.occupancy-item {
+  padding: 15px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.hotel-name {
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 8px;
+}
+
+.occupancy-bar {
+  background: #e5e7eb;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.occupancy-fill {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.occupancy-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.occupancy-percent {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.customers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.customer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.rank {
+  width: 35px;
+  height: 35px;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.customer-info {
+  flex: 1;
+}
+
+.customer-name {
+  margin: 0;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.customer-email {
+  margin: 3px 0 0 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.customer-spent {
+  text-align: right;
+}
+
+.customer-spent p {
+  margin: 0;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.bookings-section {
+  grid-column: 1 / -1;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #1e40af;
+  border-bottom: 2px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-confirmed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-pending {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-checked-in {
+  background: #d7f5f7;
+  color: #0c4a6e;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: #667eea;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
